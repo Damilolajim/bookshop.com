@@ -7,21 +7,14 @@
         <div class="course__filter">
           <filterItem />
         </div>
-        <courseComp v-if="currentView === 'home'">
-          <courseItem
-            v-for="course in courses"
-            :key="course._id"
-            :data="course"
-          />
-        </courseComp>
-        <cartComp v-if="currentView === 'cart'"> </cartComp>
+        <courseComp v-if="currentView === 'home'" />
+        <cartComp v-if="currentView === 'cart'" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import courseItem from "./components/courseItem.vue";
 import filterItem from "./components/filterItem.vue";
 import bannerComp from "./components/bannerComp.vue";
 import navbarComp from "./components/navbarComp.vue";
@@ -32,12 +25,10 @@ export default {
   name: "App",
   data() {
     return {
-      currentView: "home", // Default view
-      courses: [],
+      currentView: "home",
     };
   },
   components: {
-    courseItem,
     filterItem,
     navbarComp,
     cartComp,
@@ -45,23 +36,9 @@ export default {
     courseComp,
   },
   methods: {
-    async getCourses() {
-      try {
-        const resp = await fetch(
-          "https://api-bookshop-com.onrender.com/v1/courses"
-        );
-        const courses = await resp.json();
-        this.courses = courses.data;
-      } catch (err) {
-        console.error("Error fetching courses:", err);
-      }
-    },
     changeView(view) {
       this.currentView = view;
     },
-  },
-  mounted() {
-    this.getCourses();
   },
 };
 </script>
@@ -99,7 +76,7 @@ body {
 }
 
 .courses > * {
-  flex: 1;
+  flex: 1 0 75%;
 }
 
 .courses .course__filter {
@@ -110,6 +87,17 @@ body {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
+}
+
+.course__listing .not-found {
+  min-height: 50rem;
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: palegoldenrod;
+  flex: 1 0 100%;
 }
 
 .course__listing > * {

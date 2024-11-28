@@ -29,7 +29,7 @@ export default {
   props: {
     active: {
       type: String,
-      default: "home", // Default active page is 'home'
+      default: "home",
     },
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
       return `navbar__link ${this.active === link ? "active" : ""}`;
     },
     navigate(page) {
-      this.$emit("navigate", page); // Emit the selected page
+      this.$emit("navigate", page);
     },
   },
 };
