@@ -59,10 +59,10 @@ export default {
         );
 
         const courses = await resp.json();
-        console.log(courses);
         this.courses = courses.data;
       } catch (err) {
-        console.error("Error fetching courses:", err);
+        const errResp = await err.json();
+        console.error("Error fetching courses:", errResp);
       }
     },
   },
