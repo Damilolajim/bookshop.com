@@ -1,5 +1,5 @@
 <template>
-  <a :class="getClassName" :href="link">{{ text }}</a>
+  <a :class="getClassName()" :href="link">{{ text }}</a>
 </template>
 
 <script>
@@ -12,18 +12,19 @@ export default {
   },
   methods: {
     getClassName() {
-      return `btn ${this.className}`;
+      return `btn btn__block ${this.className}`;
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .btn {
   text-decoration: none;
   color: currentColor;
   display: inline-block;
-  padding: 1rem 2rem;
+  padding: 0.3rem 0.8rem;
+  text-align: center;
 }
 
 .btn__block {
@@ -31,7 +32,7 @@ export default {
 }
 
 .btn__primary {
-  background: red;
-  color: black;
+  background: #333333;
+  color: #fff;
 }
 </style>

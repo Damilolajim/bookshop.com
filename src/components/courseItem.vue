@@ -9,17 +9,19 @@
           <span class="bold">Subject:</span> {{ data.subject }}
         </li>
         <li class="courseItem__listItem">
-          <sapn class="bold">Location:</sapn> {{ data.location }}
+          <span class="bold">Location:</span> {{ data.location }}
         </li>
-        <li class="courseItem__listItem">
-          <span class="bold">Price:</span> {{ data.price }}
-        </li>
-        <li class="courseItem__listItem">
-          <span class="bold">Spaces:</span> {{ data.spaces }}
-        </li>
+        <div class="flex">
+          <li class="courseItem__listItem">
+            <span class="bold">Price:</span> {{ data.price }}
+          </li>
+          <li class="courseItem__listItem">
+            <span class="bold">Spaces:</span> {{ data.spaces }}
+          </li>
+        </div>
       </ul>
-      <buttonItem text="Add to Cart" className="btn__primary" link="#" />
     </div>
+    <buttonItem text="Add to Cart" className="btn__primary" link="#" />
   </div>
 </template>
 
@@ -44,14 +46,18 @@ export default {
 
 <style scoped>
 .courseItem {
-  padding: 2rem;
-  border: 1px solid #1a1a1a;
+  border: 1px solid #1a1a1a89;
   display: inline-block;
   border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+.courseItem__main {
+  padding: 0.7rem 1.4rem;
 }
 
 .couseItem__imgWrap {
-  height: 8rem;
+  height: 15rem;
 }
 
 .couseItem__imgWrap img {
@@ -62,14 +68,24 @@ export default {
 
 .courseItem__listing {
   list-style: none;
-  margin: 0.5rem 0;
 }
 .courseItem__listItem {
-  padding: 0.3rem 0;
-  font-size: 1.8rem;
+  padding: 0.18rem 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .bold {
   font-weight: 600;
+}
+
+.flex {
+  display: flex;
+  gap: 1.8rem;
+  justify-content: space-between;
+}
+
+.flex > * {
+  flex: 0 0 calc((100% - 1.8rem) / 2);
 }
 </style>

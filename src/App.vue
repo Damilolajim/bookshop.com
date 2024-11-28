@@ -1,26 +1,20 @@
 <template>
   <div class="body">
     <bannerComp title="Bookshop.com" />
-    <nav class="navbar">
-      <ul class="navbar__wrap">
-        <li class="navbar__item">
-          <a href="/" class="navbar__link">Home</a>
-        </li>
-        <li class="navbar__item">
-          <a href="/" class="navbar__link">Home</a>
-        </li>
-      </ul>
-    </nav>
-    <div class="courses">
-      <div class="course__filter">
-        <filterItem />
-      </div>
-      <div class="course__listing">
-        <courseItem
-          v-for="course in courses"
-          :key="course._id"
-          :data="course"
-        />
+    <navbarComp :active="currentView" @navigate="changeView" />
+    <div class="container">
+      <div class="courses">
+        <div class="course__filter">
+          <filterItem />
+        </div>
+        <courseComp v-if="currentView === 'home'">
+          <courseItem
+            v-for="course in courses"
+            :key="course._id"
+            :data="course"
+          />
+        </courseComp>
+        <cartComp v-if="currentView === 'cart'"> </cartComp>
       </div>
     </div>
   </div>
@@ -30,26 +24,25 @@
 import courseItem from "./components/courseItem.vue";
 import filterItem from "./components/filterItem.vue";
 import bannerComp from "./components/bannerComp.vue";
+import navbarComp from "./components/navbarComp.vue";
+import cartComp from "./components/cartComp.vue";
+import courseComp from "./components/courseComp.vue";
 
 export default {
   name: "App",
   data() {
     return {
-      courses: [
-        {
-          _id: "",
-          subject: "",
-          location: "",
-          price: 0,
-          spaces: 0,
-        },
-      ],
+      currentView: "home", // Default view
+      courses: [],
     };
   },
   components: {
     courseItem,
     filterItem,
+    navbarComp,
+    cartComp,
     bannerComp,
+    courseComp,
   },
   methods: {
     async getCourses() {
@@ -57,13 +50,14 @@ export default {
         const resp = await fetch(
           "https://api-bookshop-com.onrender.com/v1/courses"
         );
-
         const courses = await resp.json();
         this.courses = courses.data;
       } catch (err) {
-        const errResp = await err.json();
-        console.error("Error fetching courses:", errResp);
+        console.error("Error fetching courses:", err);
       }
+    },
+    changeView(view) {
+      this.currentView = view;
     },
   },
   mounted() {
@@ -92,9 +86,16 @@ body {
   box-sizing: border-box;
 }
 
+.container {
+  max-width: 140rem;
+  margin: auto;
+  padding: 0 4rem;
+}
+
 .courses {
   display: flex;
   align-items: flex-start;
+  padding: 6rem 0;
 }
 
 .courses > * {
@@ -102,16 +103,16 @@ body {
 }
 
 .courses .course__filter {
-  flex: 0 0 30%;
+  flex: 0 0 25%;
 }
 
 .course__listing {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
 .course__listing > * {
-  flex: 0 0 calc((100% - (2rem * 2)) / 3);
+  flex: 0 0 calc((100% - (1.5rem * 3)) / 4);
 }
 </style>
