@@ -11,17 +11,20 @@
         <li class="courseItem__listItem">
           <span class="bold">Location:</span> {{ data.location }}
         </li>
-        <div class="flex">
-          <li class="courseItem__listItem">
-            <span class="bold">Price:</span> {{ data.price }}
-          </li>
-          <li class="courseItem__listItem">
-            <span class="bold">Spaces:</span> {{ data.spaces }}
-          </li>
-        </div>
+        <li class="courseItem__listItem">
+          <span class="bold">Price:</span> {{ data.price }}
+        </li>
+        <li class="courseItem__listItem">
+          <span class="bold">Spaces:</span> {{ data.spaces }}
+        </li>
       </ul>
     </div>
-    <buttonItem text="Add to Cart" className="btn__primary" link="#" />
+    <buttonItem
+      text="Add to Cart"
+      @click.prevent="addToCart(data._id)"
+      className="btn__primary"
+      link="#"
+    />
   </div>
 </template>
 
@@ -32,6 +35,7 @@ export default {
   name: "courseItem",
   props: {
     data: {
+      _id: String,
       subject: String,
       location: String,
       price: Number,
@@ -41,15 +45,40 @@ export default {
   components: {
     buttonItem,
   },
+  methods: {
+    addToCart(itemId) {
+      const stringifyObj = (obj) => JSON.stringify(obj);
+
+      const options = {
+        method: "POST",
+        body: stringifyObj({
+          course_id: itemId,
+          quantity: 1,
+        }),
+      };
+
+      fetch("https://api-bookshop-com.onrender.com/v1/carts", options)
+        .then(async (resp) => {
+          this.loading = true;
+          const courses = await resp.json();
+          console.log(courses);
+        })
+        .catch((err) => {
+          console.error(`Error adding course to cart: ${err}`);
+        })
+        .finally(() => (this.loading = false));
+    },
+  },
 };
 </script>
 
 <style scoped>
 .courseItem {
-  border: 1px solid #1a1a1a89;
   display: inline-block;
   border-radius: 0.8rem;
   overflow: hidden;
+  background: #4d4d4d;
+  color: #fff;
 }
 
 .courseItem__main {
@@ -68,11 +97,17 @@ export default {
 
 .courseItem__listing {
   list-style: none;
+  margin: 0.5rem 0;
 }
+
 .courseItem__listItem {
   padding: 0.18rem 0;
   display: flex;
   justify-content: space-between;
+}
+
+.courseItem__flex > * {
+  flex: 1;
 }
 
 .bold {

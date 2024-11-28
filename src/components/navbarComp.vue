@@ -45,15 +45,15 @@ export default {
 
 <style scoped>
 .navbar {
-  background: palegoldenrod;
-  color: #000;
-  padding: 1rem 0;
+  background: #333333;
+  padding: 2rem 0;
+  color: #fff;
 }
 
 .navbar__wrap {
   list-style: none;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .navbar__link {
@@ -64,6 +64,6 @@ export default {
 
 .navbar__link.active {
   font-weight: bold;
-  color: red;
+  text-transform: uppercase;
 }
 </style>

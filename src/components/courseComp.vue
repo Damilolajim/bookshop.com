@@ -1,15 +1,24 @@
 <template>
   <div class="course__listing">
     <div v-show="loading" class="not-found">loading...</div>
-    <div v-show="!loading && !courses?.length" class="not-found">
-      Your Courses are empty
+
+    <div class="course__wrap" v-if="!loading && updateCourses?.length">
+      <courseItem
+        v-for="course in updateCourses"
+        :key="course._id"
+        :data="course"
+      />
     </div>
-    <courseItem
-      v-show="courses?.length"
-      v-for="course in courses"
-      :key="course._id"
-      :data="course"
-    />
+
+    <div class="course__wrap" v-else-if="!loading && allCourses?.length">
+      <courseItem
+        v-for="course in allCourses"
+        :key="course._id"
+        :data="course"
+      />
+    </div>
+
+    <div v-else-if="!loading" class="not-found">Your Courses are empty</div>
   </div>
 </template>
 
@@ -21,9 +30,21 @@ export default {
   data() {
     return {
       loading: true,
-      courses: [],
+      allCourses: this.courses,
+      updateCourses: this.updatedCourses,
     };
   },
+  props: {
+    updatedCourses: {
+      type: Array,
+      default: () => [],
+    },
+    courses: {
+      type: Array,
+      default: () => [],
+    },
+  },
+
   components: {
     courseItem,
   },
@@ -33,23 +54,10 @@ export default {
         .then(async (resp) => {
           this.loading = true;
           const courses = await resp.json();
-          this.courses = courses.data;
+          this.allCourses = courses.data;
         })
         .catch((err) => {
           console.error(`Error fetching courses: ${err}`);
-        })
-        .finally(() => (this.loading = false));
-    },
-
-    addToCart(itemId) {
-      fetch(`https://api-bookshop-com.onrender.com/v1/courses/${itemId}`)
-        .then((resp) => {
-          this.loading = true;
-          const courses = resp.json();
-          this.courses = courses.data;
-        })
-        .catch((err) => {
-          console.error(`Error adding course to cart: ${err}`);
         })
         .finally(() => (this.loading = false));
     },

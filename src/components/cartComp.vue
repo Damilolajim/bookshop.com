@@ -4,12 +4,15 @@
     <div v-show="!loading && !carts?.length" class="not-found">
       Your Cart is empty
     </div>
-    <courseItem
-      v-show="carts?.length"
-      v-for="cart in carts"
-      :key="cart._id"
-      :data="cart"
-    />
+
+    <div class="course__wrap">
+      <courseItem
+        v-show="carts?.length"
+        v-for="cart in carts"
+        :key="cart._id"
+        :data="cart"
+      />
+    </div>
   </div>
 </template>
 

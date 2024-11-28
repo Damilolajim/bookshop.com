@@ -23,8 +23,9 @@ export default {
   text-decoration: none;
   color: currentColor;
   display: inline-block;
-  padding: 0.3rem 0.8rem;
+  padding: 1rem 0.8rem;
   text-align: center;
+  font-size: 1.3rem;
 }
 
 .btn__block {

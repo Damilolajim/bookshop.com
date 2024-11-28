@@ -5,9 +5,14 @@
     <div class="container">
       <div class="courses">
         <div class="course__filter">
-          <filterItem />
+          <filterItem @update-courses="updateCourses" />
         </div>
-        <courseComp v-if="currentView === 'home'" />
+
+        <courseComp
+          v-if="currentView === 'home'"
+          :updatedCourses="updatedCourses"
+        />
+
         <cartComp v-if="currentView === 'cart'" />
       </div>
     </div>
@@ -26,6 +31,7 @@ export default {
   data() {
     return {
       currentView: "home",
+      updatedCourses: [],
     };
   },
   components: {
@@ -39,11 +45,16 @@ export default {
     changeView(view) {
       this.currentView = view;
     },
+    updateCourses(newCourses) {
+      this.updatedCourses = newCourses;
+    },
   },
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 *,
 *::after,
 *::before {
@@ -61,6 +72,8 @@ body {
   font-size: 1.6rem;
   color: #1a1a1a;
   box-sizing: border-box;
+  font-family: "Prompt", serif;
+  font-style: normal;
 }
 
 .container {
@@ -73,6 +86,7 @@ body {
   display: flex;
   align-items: flex-start;
   padding: 6rem 0;
+  gap: 3rem;
 }
 
 .courses > * {
@@ -83,10 +97,12 @@ body {
   flex: 0 0 25%;
 }
 
-.course__listing {
+.course__wrap {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
+  padding: 1rem;
+  align-items: flex-start;
 }
 
 .course__listing .not-found {
@@ -96,11 +112,12 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  background: palegoldenrod;
+  background: #4d4d4d;
+  color: #fff;
   flex: 1 0 100%;
 }
 
-.course__listing > * {
+.course__wrap > * {
   flex: 0 0 calc((100% - (1.5rem * 3)) / 4);
 }
 </style>
