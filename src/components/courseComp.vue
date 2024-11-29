@@ -1,6 +1,8 @@
 <template>
   <div class="course__listing">
-    <div v-show="loading" class="not-found">loading...</div>
+    <div v-show="loading" class="not-found">
+      <loaderComp />
+    </div>
 
     <div class="course__wrap" v-if="!loading && allCourses?.length">
       <courseItem
@@ -19,6 +21,7 @@
 
 <script>
 import courseItem from "./courseItem.vue";
+import loaderComp from "./loaderComp.vue";
 
 export default {
   name: "courseComp",
@@ -30,8 +33,20 @@ export default {
       isCartComponent: false,
     };
   },
+  props: {
+    updatedCourse: Array,
+  },
+  watch: {
+    updatedCourse: {
+      immediate: true,
+      handler(newVal) {
+        this.allCourses = newVal || [];
+      },
+    },
+  },
   components: {
     courseItem,
+    loaderComp,
   },
   methods: {
     async loadImages() {
@@ -55,6 +70,21 @@ export default {
       this.loading = loading;
 
       fetch("https://api-bookshop-com.onrender.com/v1/courses")
+        .then(async (resp) => {
+          const courses = await resp.json();
+          this.allCourses = courses.data;
+        })
+        .catch((err) => {
+          console.error(`Error fetching courses: ${err}`);
+        })
+        .finally(() => (this.loading = false));
+    },
+    sortCourses({ loading = false, sort = undefined, order = "asc" } = {}) {
+      this.loading = loading;
+
+      fetch(
+        `https://api-bookshop-com.onrender.com/v1/courses?sort=${sort}&order=${order}`
+      )
         .then(async (resp) => {
           const courses = await resp.json();
           this.allCourses = courses.data;

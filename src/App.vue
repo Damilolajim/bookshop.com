@@ -5,11 +5,12 @@
     <div class="container">
       <div class="courses">
         <div class="course__filter">
-          <filterItem />
+          <filterItem @sortCourses="sortCourses" />
         </div>
-
-        <courseComp v-if="currentView === 'home'" />
-
+        <courseComp
+          v-if="currentView === 'home'"
+          :updatedCourse="updatedCourses"
+        />
         <cartComp v-if="currentView === 'cart'" />
       </div>
     </div>
@@ -28,6 +29,7 @@ export default {
   data() {
     return {
       currentView: "home",
+      updatedCourses: undefined,
     };
   },
   components: {
@@ -38,6 +40,21 @@ export default {
     courseComp,
   },
   methods: {
+    sortCourses({ loading = false, sort = undefined, order = "asc" } = {}) {
+      this.loading = loading;
+
+      fetch(
+        `https://api-bookshop-com.onrender.com/v1/courses?sort=${sort}&order=${order}`
+      )
+        .then(async (resp) => {
+          const courses = await resp.json();
+          this.updatedCourses = courses.data;
+        })
+        .catch((err) => {
+          console.error(`Error fetching courses: ${err}`);
+        })
+        .finally(() => (this.loading = false));
+    },
     changeView(view) {
       this.currentView = view;
     },
@@ -61,6 +78,7 @@ export default {
 
 html {
   font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -78,11 +96,55 @@ body {
   padding: 0 4rem;
 }
 
+@media screen and (max-width: 755px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
+
+@media screen and (max-width: 685px) {
+  .container {
+    padding: 0 1.3rem;
+  }
+}
+
 .courses {
   display: flex;
   align-items: flex-start;
   padding: 6rem 0;
   gap: 3rem;
+}
+
+@media screen and (max-width: 1085px) {
+  .courses {
+    gap: 2rem;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .courses {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 730px) {
+  .courses {
+    display: block;
+  }
+}
+
+.course__main {
+  padding: 1rem 1.3rem;
+}
+
+.course__heading {
+  margin-bottom: 1.6rem;
+}
+
+@media screen and (max-width: 500px) {
+  .course__heading {
+    font-size: 1.9rem;
+  }
 }
 
 .courses > * {
@@ -93,16 +155,54 @@ body {
   flex: 0 0 25%;
 }
 
+@media screen and (max-width: 730px) {
+  .courses .course__filter {
+    margin-bottom: 3rem;
+  }
+}
+
 .course__wrap {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
-  padding: 1rem;
+  padding: 1rem 0;
   align-items: flex-start;
 }
 
+@media screen and (max-width: 1265px) {
+  .course__wrap {
+    gap: 2rem;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .course__wrap {
+    gap: 1rem;
+  }
+}
+
+@media screen and (max-width: 435px) {
+  .course__wrap {
+    gap: 2rem;
+    width: 70%;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 367px) {
+  .course__wrap {
+    width: 85%;
+  }
+}
+
+@media screen and (max-width: 322px) {
+  .course__wrap {
+    width: 100%;
+  }
+}
+
 .course__listing .not-found {
-  min-height: 50rem;
+  min-height: 70rem;
   font-size: 4rem;
   display: flex;
   align-items: center;
@@ -115,5 +215,41 @@ body {
 
 .course__wrap > * {
   flex: 0 0 calc((100% - (1.5rem * 3)) / 4);
+}
+
+@media screen and (max-width: 1265px) {
+  .course__wrap > * {
+    flex: 0 0 calc((100% - (2rem * 2)) / 3);
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .course__wrap > * {
+    flex: 0 0 calc((100% - 2rem) / 3);
+  }
+}
+
+@media screen and (max-width: 965px) {
+  .course__wrap > * {
+    flex: 0 0 calc((100% - 1rem) / 2);
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .course__wrap > * {
+    flex: 0 0 calc((100% - 2rem) / 3);
+  }
+}
+
+@media screen and (max-width: 685px) {
+  .course__wrap > * {
+    flex: 0 0 calc((100% - 1rem) / 2);
+  }
+}
+
+@media screen and (max-width: 435px) {
+  .course__wrap > * {
+    flex: 1 0 100%;
+  }
 }
 </style>
