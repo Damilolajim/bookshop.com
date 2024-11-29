@@ -28,7 +28,7 @@ export default {
   name: "App",
   data() {
     return {
-      currentView: "cart",
+      currentView: "home",
       updatedCourses: undefined,
     };
   },
