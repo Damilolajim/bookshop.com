@@ -1,6 +1,10 @@
 <template>
   <div class="course__listing">
-    <div v-show="loading" class="not-found">loading...</div>
+    <div v-show="loading" class="not-found">
+      <div v-show="loading" class="not-found">
+        <loaderComp />
+      </div>
+    </div>
 
     <div v-show="!loading && !courses?.length" class="not-found">
       Your Cart is empty
@@ -110,6 +114,7 @@
 <script>
 import courseItem from "./courseItem.vue";
 import buttonItem from "./buttonItem.vue";
+import loaderComp from "./loaderComp.vue";
 
 export default {
   name: "courseComp",
@@ -126,6 +131,7 @@ export default {
   components: {
     courseItem,
     buttonItem,
+    loaderComp,
   },
   methods: {
     getCarts(loading = true) {

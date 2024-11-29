@@ -1,6 +1,8 @@
 <template>
   <div class="course__listing">
-    <div v-show="loading" class="not-found">loading...</div>
+    <div v-show="loading" class="not-found">
+      <loaderComp />
+    </div>
 
     <div class="course__wrap" v-if="!loading && allCourses?.length">
       <courseItem
@@ -19,6 +21,7 @@
 
 <script>
 import courseItem from "./courseItem.vue";
+import loaderComp from "./loaderComp.vue";
 
 export default {
   name: "courseComp",
@@ -43,6 +46,7 @@ export default {
   },
   components: {
     courseItem,
+    loaderComp,
   },
   methods: {
     async loadImages() {
