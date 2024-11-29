@@ -18,8 +18,8 @@
         <input type="radio" name="sort-field" value="price" />
         <span>Price</span>
       </li>
-      <li class="filterItem__listItem" @click="setField('availability')">
-        <input type="radio" name="sort-field" value="availability" />
+      <li class="filterItem__listItem" @click="setField('spaces')">
+        <input type="radio" name="sort-field" value="spaces" />
         <span>Availability</span>
       </li>
     </ul>

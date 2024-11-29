@@ -16,7 +16,7 @@
           <span class="bold">Location:</span> {{ data.location }}
         </li>
         <li class="courseItem__listItem">
-          <span class="bold">Price:</span> {{ data.price }}
+          <span class="bold">Price:</span> &pound;{{ data.price }}
         </li>
         <li class="courseItem__listItem">
           <span class="bold">Spaces:</span> {{ data.spaces }}
@@ -25,7 +25,7 @@
     </div>
     <buttonItem
       link="#"
-      className="btn__primary"
+      className="btn__primary btn__block"
       :text="getCartItem(data._id) ? 'Remove' : 'Add to Cart'"
       @click.prevent="
         getCartItem(data._id) ? deleteCartItem(data._id) : addToCart(data._id)

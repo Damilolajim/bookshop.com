@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     getClassName() {
-      return `btn btn__block ${this.className}`;
+      return `btn ${this.className}`;
     },
   },
 };
@@ -25,6 +25,7 @@ export default {
   display: inline-block;
   padding: 1rem 0.8rem;
   text-align: center;
+  text-transform: capitalize;
   font-size: 1.3rem;
 }
 

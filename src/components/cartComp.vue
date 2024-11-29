@@ -6,22 +6,110 @@
       Your Cart is empty
     </div>
 
-    <div class="course__wrap" v-if="!loading && courses?.length">
-      <courseItem
-        v-for="(courseItem, i) in courses"
-        :_carts="carts"
-        :key="courseItem._id"
-        :data="courseItem"
-        :path="images[i]"
-        :cartComponent="isCartComponent"
-        @update-cart="getCarts"
-      />
+    <div class="course__main" v-if="!loading && courses?.length">
+      <div class="pad">
+        <header class="checkout__header">
+          <h2 class="course__heading">Cheackout</h2>
+          <span class="edit"><a href="#courseListing">Edit</a></span>
+        </header>
+      </div>
+      <div class="checkout">
+        <div class="checkout__tableWrap">
+          <table class="checkout__table">
+            <thead class="checkout__tableHead">
+              <tr class="checkout__tableRow">
+                <th class="checkout__tableData head">Subject</th>
+                <th class="checkout__tableData head">Location</th>
+                <th class="checkout__tableData head">Price</th>
+                <th class="checkout__tableData head">Quantity</th>
+                <th class="checkout__tableData head">Total (&pound;)</th>
+              </tr>
+            </thead>
+            <tbody class="checkout__tableBody">
+              <tr
+                v-for="(cart, i) in courses"
+                :key="cart._id"
+                class="checkout__tableRow"
+              >
+                <td class="checkout__tableData">
+                  {{ cart.subject }}
+                </td>
+                <td class="checkout__tableData center">
+                  {{ cart.location }}
+                </td>
+                <td class="checkout__tableData center">
+                  {{ cart.price }}
+                </td>
+                <td class="checkout__tableData center">
+                  {{ checkoutCart.data[i].quantity }}
+                </td>
+                <td class="checkout__tableData center">
+                  {{ checkoutCart.data[i].total }}
+                </td>
+              </tr>
+              <tr class="checkout__tableRow bold">
+                <td class="checkout__tableData" colspan="4">
+                  Total Cart Calue
+                </td>
+                <td class="checkout__tableData center">
+                  {{ checkoutCart.totalCartValue }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="checkout__info">
+          <form action="#">
+            <div class="flex">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  v-model="checkoutCart.name"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  v-model="checkoutCart.email"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="right-align">
+              <buttonItem link="#" className="btn__primary" text="checkout" />
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="courseListing">
+        <h2 class="course__heading">Course Checkout Listing</h2>
+        <div class="course__wrap">
+          <courseItem
+            v-for="(courseItem, i) in courses"
+            :_carts="carts"
+            :key="courseItem._id"
+            :data="courseItem"
+            :path="images[i]"
+            :cartComponent="isCartComponent"
+            @update-cart="getCarts"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import courseItem from "./courseItem.vue";
+import buttonItem from "./buttonItem.vue";
 
 export default {
   name: "courseComp",
@@ -30,21 +118,24 @@ export default {
       carts: [],
       images: [],
       courses: [],
+      checkoutCart: [],
       loading: true,
       isCartComponent: true,
     };
   },
   components: {
     courseItem,
+    buttonItem,
   },
   methods: {
-    async getCarts(loading = true) {
+    getCarts(loading = true) {
       this.loading = loading;
 
       fetch("https://api-bookshop-com.onrender.com/v1/carts")
         .then(async (resp) => {
           const carts = await resp.json();
           this.carts = carts;
+          this.checkoutCart = carts;
           this.courses = carts.data.map(({ course }) => course);
         })
         .catch((err) => {
@@ -58,7 +149,7 @@ export default {
       fetch(`https://api-bookshop-com.onrender.com/v1/courses/${itemId}`)
         .then((resp) => {
           const carts = resp.json();
-          this.carts = carts.data;
+          console.log(carts);
         })
         .catch((err) => {
           console.error(`Error adding course to cart: ${err}`);
@@ -84,8 +175,138 @@ export default {
     },
   },
   async mounted() {
-    await this.getCarts();
+    this.getCarts();
     await this.loadImages();
+    console.log(this.carts);
   },
 };
 </script>
+
+<style scoped>
+.checkout {
+  background: #efefef;
+  padding: 2rem;
+  margin-bottom: 5rem;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.checkout .btn__primary {
+  width: 20%;
+  margin-top: 1.6rem;
+}
+
+@media screen and (max-width: 965px) {
+  .checkout .btn__primary {
+    width: 30%;
+  }
+}
+
+@media screen and (max-width: 555px) {
+  .checkout .btn__primary {
+    width: 100%;
+  }
+}
+
+.right-align {
+  text-align: right;
+}
+
+@media screen and (max-width: 965px) {
+  .right-align {
+    text-align: left;
+  }
+}
+
+.pad {
+  padding: 0 1rem;
+}
+
+.checkout__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: currentColor;
+}
+
+.checkout__table {
+  width: 100%;
+  min-width: 60rem;
+  border-collapse: collapse;
+}
+
+.checkout__tableWrap {
+  margin-bottom: 4rem;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.checkout__tableWrap::-webkit-scrollbar {
+  display: none;
+}
+
+.checkout__tableHead {
+  background: #333333;
+  color: #fff;
+}
+
+.checkout__tableData {
+  padding: 1rem;
+}
+
+.checkout__tableRow:nth-child(even) {
+  background: #80808048;
+}
+
+.checkout__tableData.center {
+  text-align: center;
+}
+
+.checkout__tableRow.bold {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+@media screen and (max-width: 965px) {
+  .flex {
+    flex-direction: column;
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group > * {
+  display: block;
+}
+
+.form-group label {
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+
+.form-group input {
+  padding: 1rem 1.5rem;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid transparent;
+}
+
+.form-group input:focus {
+  border-bottom: 2px solid #4d4d4d;
+  background: #4d4d4d60;
+}
+
+.flex > * {
+  flex: 1 0 calc((100% - 2rem) / 2);
+}
+</style>
