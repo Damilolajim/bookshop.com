@@ -25,8 +25,8 @@
     </div>
     <buttonItem
       link="#"
-      :text="getCartItem(data._id) ? 'Remove' : 'Add to CArt'"
       className="btn__primary"
+      :text="getCartItem(data._id) ? 'Remove' : 'Add to Cart'"
       @click.prevent="
         getCartItem(data._id) ? deleteCartItem(data._id) : addToCart(data._id)
       "
@@ -39,8 +39,18 @@ import buttonItem from "./buttonItem.vue";
 
 export default {
   name: "courseItem",
+  data() {
+    return {
+      loading: true,
+      isCartComponent: this.cartComponent,
+      carts: this._carts,
+      cartIDs: [],
+    };
+  },
   props: {
+    _carts: Object,
     path: String,
+    cartComponent: Boolean,
     data: {
       _id: String,
       subject: String,
@@ -71,13 +81,13 @@ export default {
         .then(async (resp) => {
           const response = await resp.json();
           console.log(response);
+          this.$emit("update-course", false);
         })
         .catch((err) => {
           console.error(`Error adding course to cart: ${err}`);
         })
         .finally(() => (this.loading = false));
     },
-
     deleteCartItem(itemId) {
       this.loading = true;
 
@@ -92,26 +102,23 @@ export default {
         .then(async (resp) => {
           const response = await resp.json();
           console.log(response);
+          this.$emit("update-cart", false);
         })
         .catch((err) => {
           console.error(`Error adding course to cart: ${err}`);
         })
         .finally(() => (this.loading = false));
     },
-
-    getCartItem(itemId) {
-      this.loading = true;
-
-      fetch(`https://api-bookshop-com.onrender.com/v1/carts/${itemId}`)
-        .then(async (resp) => {
-          const cartResp = await resp.json();
-          return cartResp.data.successful;
-        })
-        .catch((err) => {
-          console.error(`Error fetching courses: ${err}`);
-        })
-        .finally(() => (this.loading = false));
+    fetchCartItems() {
+      if (!this.isCartComponent) return;
+      this.cartIDs = this.carts.data.map((itm) => itm.course_id);
     },
+    getCartItem(itemId) {
+      return this.cartIDs.includes(itemId);
+    },
+  },
+  mounted() {
+    this.fetchCartItems();
   },
 };
 </script>
