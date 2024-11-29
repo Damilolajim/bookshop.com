@@ -1,7 +1,11 @@
 <template>
   <div class="courseItem">
     <div class="couseItem__imgWrap">
-      <img src="../assets/logo.png" alt="this is meant to be an image" />
+      <img
+        :key="Math.ceil(Math.random() * 1000)"
+        :src="path"
+        alt="course image"
+      />
     </div>
     <div class="courseItem__main">
       <ul class="courseItem__listing">
@@ -20,10 +24,12 @@
       </ul>
     </div>
     <buttonItem
-      text="Add to Cart"
-      @click.prevent="addToCart(data._id)"
-      className="btn__primary"
       link="#"
+      :text="getCartItem(data._id) ? 'Remove' : 'Add to CArt'"
+      className="btn__primary"
+      @click.prevent="
+        getCartItem(data._id) ? deleteCartItem(data._id) : addToCart(data._id)
+      "
     />
   </div>
 </template>
@@ -34,6 +40,7 @@ import buttonItem from "./buttonItem.vue";
 export default {
   name: "courseItem",
   props: {
+    path: String,
     data: {
       _id: String,
       subject: String,
@@ -67,6 +74,41 @@ export default {
         })
         .catch((err) => {
           console.error(`Error adding course to cart: ${err}`);
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    deleteCartItem(itemId) {
+      this.loading = true;
+
+      const options = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(`https://api-bookshop-com.onrender.com/v1/carts/${itemId}`, options)
+        .then(async (resp) => {
+          const response = await resp.json();
+          console.log(response);
+        })
+        .catch((err) => {
+          console.error(`Error adding course to cart: ${err}`);
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    getCartItem(itemId) {
+      this.loading = true;
+
+      fetch(`https://api-bookshop-com.onrender.com/v1/carts/${itemId}`)
+        .then(async (resp) => {
+          const cartResp = await resp.json();
+          return cartResp.data.successful;
+        })
+        .catch((err) => {
+          console.error(`Error fetching courses: ${err}`);
         })
         .finally(() => (this.loading = false));
     },

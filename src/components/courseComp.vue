@@ -4,9 +4,10 @@
 
     <div class="course__wrap" v-if="!loading && allCourses?.length">
       <courseItem
-        v-for="course in allCourses"
+        v-for="(course, i) in allCourses"
         :key="course._id"
         :data="course"
+        :path="images[i]"
       />
     </div>
 
@@ -23,6 +24,7 @@ export default {
     return {
       loading: true,
       allCourses: this.courses,
+      images: [],
     };
   },
   props: {
@@ -35,6 +37,23 @@ export default {
     courseItem,
   },
   methods: {
+    async loadImages() {
+      for (let i = 1; i <= 21; i++) {
+        try {
+          let image;
+          if (i <= 5) image = await import(`../assets/images/image-${i}.webp`);
+
+          if (i > 5 && 1 <= 21)
+            image = await import(`../assets/images/image-${i}.jpg`);
+
+          if (i > 21) image = await import("../assets/logo.png");
+
+          this.images.push(image.default);
+        } catch (error) {
+          console.error(`Error loading image-${i}.webp:`, error);
+        }
+      }
+    },
     getCourses() {
       this.loading = true;
 
@@ -49,9 +68,9 @@ export default {
         .finally(() => (this.loading = false));
     },
   },
-  mounted() {
+  async mounted() {
     this.getCourses();
-    console.log(this.allCourses);
+    await this.loadImages();
   },
 };
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div class="course__listing">
     <div v-show="loading" class="not-found">loading...</div>
+
     <div v-show="!loading && !carts?.length" class="not-found">
       Your Cart is empty
     </div>
@@ -8,9 +9,10 @@
     <div class="course__wrap">
       <courseItem
         v-show="carts?.length"
-        v-for="cart in carts"
+        v-for="(cart, i) in carts"
         :key="cart._id"
         :data="cart"
+        :path="images[i]"
       />
     </div>
   </div>
@@ -25,6 +27,7 @@ export default {
     return {
       loading: true,
       carts: [],
+      images: [],
     };
   },
   components: {
@@ -58,9 +61,28 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+
+    async loadImages() {
+      for (let i = 1; i <= 21; i++) {
+        try {
+          let image;
+          if (i <= 5) image = await import(`../assets/images/image-${i}.webp`);
+
+          if (i > 5 && 1 <= 21)
+            image = await import(`../assets/images/image-${i}.jpg`);
+
+          if (i > 21) image = await import("../assets/logo.png");
+
+          this.images.push(image.default);
+        } catch (error) {
+          console.error(`Error loading image-${i}.webp:`, error);
+        }
+      }
+    },
   },
-  mounted() {
+  async mounted() {
     this.getCarts();
+    await this.loadImages();
   },
 };
 </script>
