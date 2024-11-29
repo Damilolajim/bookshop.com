@@ -1,78 +1,57 @@
 <template>
   <div class="body">
     <bannerComp title="Bookshop.com" />
-    <nav class="navbar">
-      <ul class="navbar__wrap">
-        <li class="navbar__item">
-          <a href="/" class="navbar__link">Home</a>
-        </li>
-        <li class="navbar__item">
-          <a href="/" class="navbar__link">Home</a>
-        </li>
-      </ul>
-    </nav>
-    <div class="courses">
-      <div class="course__filter">
-        <filterItem />
-      </div>
-      <div class="course__listing">
-        <courseItem
-          v-for="course in courses"
-          :key="course._id"
-          :data="course"
-        />
+    <navbarComp :active="currentView" @navigate="changeView" />
+    <div class="container">
+      <div class="courses">
+        <div class="course__filter">
+          <filterItem @update-courses="updateCourses" />
+        </div>
+
+        <courseComp v-if="currentView === 'home'" :courses="updatedCourses" />
+
+        <cartComp v-if="currentView === 'cart'" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import courseItem from "./components/courseItem.vue";
 import filterItem from "./components/filterItem.vue";
 import bannerComp from "./components/bannerComp.vue";
+import navbarComp from "./components/navbarComp.vue";
+import cartComp from "./components/cartComp.vue";
+import courseComp from "./components/courseComp.vue";
 
 export default {
   name: "App",
   data() {
     return {
-      courses: [
-        {
-          _id: "",
-          subject: "",
-          location: "",
-          price: 0,
-          spaces: 0,
-        },
-      ],
+      currentView: "home",
+      updatedCourses: [],
     };
   },
   components: {
-    courseItem,
     filterItem,
+    navbarComp,
+    cartComp,
     bannerComp,
+    courseComp,
   },
   methods: {
-    async getCourses() {
-      try {
-        const resp = await fetch(
-          "https://api-bookshop-com.onrender.com/v1/courses"
-        );
-
-        const courses = await resp.json();
-        console.log(courses);
-        this.courses = courses.data;
-      } catch (err) {
-        console.error("Error fetching courses:", err);
-      }
+    changeView(view) {
+      this.currentView = view;
     },
-  },
-  mounted() {
-    this.getCourses();
+    updateCourses(newCourses) {
+      this.updatedCourses = newCourses;
+    },
   },
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 *,
 *::after,
 *::before {
@@ -90,28 +69,52 @@ body {
   font-size: 1.6rem;
   color: #1a1a1a;
   box-sizing: border-box;
+  font-family: "Prompt", serif;
+  font-style: normal;
+}
+
+.container {
+  max-width: 140rem;
+  margin: auto;
+  padding: 0 4rem;
 }
 
 .courses {
   display: flex;
   align-items: flex-start;
+  padding: 6rem 0;
+  gap: 3rem;
 }
 
 .courses > * {
-  flex: 1;
+  flex: 1 0 75%;
 }
 
 .courses .course__filter {
-  flex: 0 0 30%;
+  flex: 0 0 25%;
 }
 
-.course__listing {
+.course__wrap {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
+  padding: 1rem;
+  align-items: flex-start;
 }
 
-.course__listing > * {
-  flex: 0 0 calc((100% - (2rem * 2)) / 3);
+.course__listing .not-found {
+  min-height: 50rem;
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: #4d4d4d;
+  color: #fff;
+  flex: 1 0 100%;
+}
+
+.course__wrap > * {
+  flex: 0 0 calc((100% - (1.5rem * 3)) / 4);
 }
 </style>
