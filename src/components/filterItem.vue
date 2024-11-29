@@ -41,14 +41,15 @@ export default {
   name: "filterItem",
   data() {
     return {
-      localField: this.field || "school",
-      localOrder: this.order || "asc",
+      loading: true,
+      localField: this.field || "",
+      localOrder: this.order,
     };
   },
   props: {
     field: {
       type: String,
-      default: "school",
+      default: "",
     },
     order: {
       type: String,
@@ -57,6 +58,8 @@ export default {
   },
   methods: {
     sortCourses() {
+      this.loading = true;
+
       fetch(
         `https://api-bookshop-com.onrender.com/v1/courses?sort=${this.localField}&order=${this.localOrder}`
       )
@@ -72,6 +75,7 @@ export default {
     setField(field) {
       if (field === "all") {
         this.localField = this.localOrder = "";
+        this.sortCourses();
         return;
       }
 

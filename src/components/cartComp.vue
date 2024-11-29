@@ -32,9 +32,10 @@ export default {
   },
   methods: {
     getCarts() {
+      this.loading = true;
+
       fetch("https://api-bookshop-com.onrender.com/v1/carts")
         .then(async (resp) => {
-          this.loading = true;
           const carts = await resp.json();
           this.carts = carts.data;
         })
@@ -45,9 +46,10 @@ export default {
     },
 
     removeFromCart(itemId) {
+      this.loading = true;
+
       fetch(`https://api-bookshop-com.onrender.com/v1/courses/${itemId}`)
         .then((resp) => {
-          this.loading = true;
           const carts = resp.json();
           this.carts = carts.data;
         })

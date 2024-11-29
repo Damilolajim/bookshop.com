@@ -8,10 +8,7 @@
           <filterItem @update-courses="updateCourses" />
         </div>
 
-        <courseComp
-          v-if="currentView === 'home'"
-          :updatedCourses="updatedCourses"
-        />
+        <courseComp v-if="currentView === 'home'" :courses="updatedCourses" />
 
         <cartComp v-if="currentView === 'cart'" />
       </div>

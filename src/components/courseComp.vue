@@ -2,15 +2,7 @@
   <div class="course__listing">
     <div v-show="loading" class="not-found">loading...</div>
 
-    <div class="course__wrap" v-if="!loading && updateCourses?.length">
-      <courseItem
-        v-for="course in updateCourses"
-        :key="course._id"
-        :data="course"
-      />
-    </div>
-
-    <div class="course__wrap" v-else-if="!loading && allCourses?.length">
+    <div class="course__wrap" v-if="!loading && allCourses?.length">
       <courseItem
         v-for="course in allCourses"
         :key="course._id"
@@ -31,28 +23,23 @@ export default {
     return {
       loading: true,
       allCourses: this.courses,
-      updateCourses: this.updatedCourses,
     };
   },
   props: {
-    updatedCourses: {
-      type: Array,
-      default: () => [],
-    },
     courses: {
       type: Array,
       default: () => [],
     },
   },
-
   components: {
     courseItem,
   },
   methods: {
     getCourses() {
+      this.loading = true;
+
       fetch("https://api-bookshop-com.onrender.com/v1/courses")
         .then(async (resp) => {
-          this.loading = true;
           const courses = await resp.json();
           this.allCourses = courses.data;
         })
@@ -64,6 +51,7 @@ export default {
   },
   mounted() {
     this.getCourses();
+    console.log(this.allCourses);
   },
 };
 </script>

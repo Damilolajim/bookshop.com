@@ -47,6 +47,7 @@ export default {
   },
   methods: {
     addToCart(itemId) {
+      this.loading = true;
       const stringifyObj = (obj) => JSON.stringify(obj);
 
       const options = {
@@ -59,9 +60,8 @@ export default {
 
       fetch("https://api-bookshop-com.onrender.com/v1/carts", options)
         .then(async (resp) => {
-          this.loading = true;
-          const courses = await resp.json();
-          console.log(courses);
+          const response = await resp.json();
+          console.log(response);
         })
         .catch((err) => {
           console.error(`Error adding course to cart: ${err}`);
