@@ -48,11 +48,13 @@ export default {
   methods: {
     addToCart(itemId) {
       this.loading = true;
-      const stringifyObj = (obj) => JSON.stringify(obj);
 
       const options = {
         method: "POST",
-        body: stringifyObj({
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           course_id: itemId,
           quantity: 1,
         }),
