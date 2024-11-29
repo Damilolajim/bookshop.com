@@ -5,10 +5,13 @@
     <div class="container">
       <div class="courses">
         <div class="course__filter">
-          <filterItem />
+          <filterItem @sortCourses="sortCourses" />
         </div>
 
-        <courseComp v-if="currentView === 'home'" />
+        <courseComp
+          v-if="currentView === 'home'"
+          :updatedCourse="updatedCourses"
+        />
 
         <cartComp v-if="currentView === 'cart'" />
       </div>
@@ -28,6 +31,7 @@ export default {
   data() {
     return {
       currentView: "home",
+      updatedCourses: undefined,
     };
   },
   components: {
@@ -38,6 +42,21 @@ export default {
     courseComp,
   },
   methods: {
+    sortCourses({ loading = false, sort = undefined, order = "asc" } = {}) {
+      this.loading = loading;
+
+      fetch(
+        `https://api-bookshop-com.onrender.com/v1/courses?sort=${sort}&order=${order}`
+      )
+        .then(async (resp) => {
+          const courses = await resp.json();
+          this.updatedCourses = courses.data;
+        })
+        .catch((err) => {
+          console.error(`Error fetching courses: ${err}`);
+        })
+        .finally(() => (this.loading = false));
+    },
     changeView(view) {
       this.currentView = view;
     },

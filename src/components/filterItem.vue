@@ -2,13 +2,13 @@
   <div class="filterItem">
     <h2>Sort by</h2>
     <ul class="filterItem__listing">
-      <li class="filterItem__listItem" @click="setField('all')">
-        <input type="radio" name="sort-field" value="" />
+      <li class="filterItem__listItem" @click="setField('')">
+        <input type="radio" name="sort-field" />
         <span>All</span>
       </li>
-      <li class="filterItem__listItem" @click="setField('school')">
+      <li class="filterItem__listItem" @click="setField('subject')">
         <input type="radio" name="sort-field" value="school" />
-        <span>School</span>
+        <span>Subject</span>
       </li>
       <li class="filterItem__listItem" @click="setField('location')">
         <input type="radio" name="sort-field" value="location" />
@@ -57,35 +57,20 @@ export default {
     },
   },
   methods: {
-    sortCourses() {
-      this.loading = true;
-
-      fetch(
-        `https://api-bookshop-com.onrender.com/v1/courses?sort=${this.localField}&order=${this.localOrder}`
-      )
-        .then(async (resp) => {
-          const courses = await resp.json();
-          this.$emit("update-courses", courses.data);
-        })
-        .catch((err) => {
-          console.error(`Error fetching courses: ${err}`);
-        });
-    },
-
     setField(field) {
-      if (field === "all") {
-        this.localField = this.localOrder = "";
-        this.sortCourses();
-        return;
-      }
-
       this.localField = field;
       this.sortCourses();
     },
-
     setOrder(order) {
       this.localOrder = order;
       this.sortCourses();
+    },
+    sortCourses() {
+      this.$emit("sortCourses", {
+        loading: false,
+        sort: this.localField,
+        order: this.localOrder,
+      });
     },
   },
 };
