@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkbookshop_com"]=self["webpackChunkbookshop_com"]||[]).push([[977],{8977:function(o,p,s){o.exports=s.p+"img/image-11.8b919c7a.jpg"}}]);
