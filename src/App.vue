@@ -5,10 +5,10 @@
     <div class="container">
       <div class="courses">
         <div class="course__filter">
-          <filterItem @update-courses="updateCourses" />
+          <filterItem />
         </div>
 
-        <courseComp v-if="currentView === 'home'" :courses="updatedCourses" />
+        <courseComp v-if="currentView === 'home'" />
 
         <cartComp v-if="currentView === 'cart'" />
       </div>
@@ -28,7 +28,6 @@ export default {
   data() {
     return {
       currentView: "home",
-      updatedCourses: [],
     };
   },
   components: {

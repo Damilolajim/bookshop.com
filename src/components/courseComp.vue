@@ -8,6 +8,8 @@
         :key="course._id"
         :data="course"
         :path="images[i]"
+        :cartComponent="isCartComponent"
+        @update-course="getCourses"
       />
     </div>
 
@@ -22,16 +24,11 @@ export default {
   name: "courseComp",
   data() {
     return {
-      loading: true,
-      allCourses: this.courses,
       images: [],
+      loading: true,
+      allCourses: [],
+      isCartComponent: false,
     };
-  },
-  props: {
-    courses: {
-      type: Array,
-      default: () => [],
-    },
   },
   components: {
     courseItem,
@@ -54,8 +51,8 @@ export default {
         }
       }
     },
-    getCourses() {
-      this.loading = true;
+    getCourses(loading = true) {
+      this.loading = loading;
 
       fetch("https://api-bookshop-com.onrender.com/v1/courses")
         .then(async (resp) => {

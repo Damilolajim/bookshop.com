@@ -2,17 +2,19 @@
   <div class="course__listing">
     <div v-show="loading" class="not-found">loading...</div>
 
-    <div v-show="!loading && !carts?.length" class="not-found">
+    <div v-show="!loading && !courses?.length" class="not-found">
       Your Cart is empty
     </div>
 
-    <div class="course__wrap">
+    <div class="course__wrap" v-if="!loading && courses?.length">
       <courseItem
-        v-show="carts?.length"
-        v-for="(cart, i) in carts"
-        :key="cart._id"
-        :data="cart"
+        v-for="(courseItem, i) in courses"
+        :_carts="carts"
+        :key="courseItem._id"
+        :data="courseItem"
         :path="images[i]"
+        :cartComponent="isCartComponent"
+        @update-cart="getCarts"
       />
     </div>
   </div>
@@ -25,29 +27,31 @@ export default {
   name: "courseComp",
   data() {
     return {
-      loading: true,
       carts: [],
       images: [],
+      courses: [],
+      loading: true,
+      isCartComponent: true,
     };
   },
   components: {
     courseItem,
   },
   methods: {
-    getCarts() {
-      this.loading = true;
+    async getCarts(loading = true) {
+      this.loading = loading;
 
       fetch("https://api-bookshop-com.onrender.com/v1/carts")
         .then(async (resp) => {
           const carts = await resp.json();
-          this.carts = carts.data;
+          this.carts = carts;
+          this.courses = carts.data.map(({ course }) => course);
         })
         .catch((err) => {
           console.error(`Error fetching courses: ${err}`);
         })
         .finally(() => (this.loading = false));
     },
-
     removeFromCart(itemId) {
       this.loading = true;
 
@@ -61,14 +65,13 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-
     async loadImages() {
       for (let i = 1; i <= 21; i++) {
         try {
           let image;
           if (i <= 5) image = await import(`../assets/images/image-${i}.webp`);
 
-          if (i > 5 && 1 <= 21)
+          if (i >= 6 && 1 <= 21)
             image = await import(`../assets/images/image-${i}.jpg`);
 
           if (i > 21) image = await import("../assets/logo.png");
@@ -81,7 +84,7 @@ export default {
     },
   },
   async mounted() {
-    this.getCarts();
+    await this.getCarts();
     await this.loadImages();
   },
 };
