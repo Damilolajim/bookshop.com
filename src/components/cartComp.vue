@@ -6,6 +6,10 @@
       </div>
     </div>
 
+    <div v-show="checkedOut && !loading" class="not-found">
+      Checkout successful
+    </div>
+
     <div v-show="!loading && !courses?.length" class="not-found">
       Your Cart is empty
     </div>
@@ -70,9 +74,9 @@
                 <input
                   type="text"
                   id="name"
-                  v-model="checkoutCart.name"
                   required
                   autocomplete="off"
+                  v-model="checkout.name"
                 />
               </div>
               <div class="form-group">
@@ -80,14 +84,19 @@
                 <input
                   type="email"
                   id="email"
-                  v-model="checkoutCart.email"
+                  v-model="checkout.email"
                   required
                   autocomplete="off"
                 />
               </div>
             </div>
             <div class="right-align">
-              <buttonItem link="#" className="btn__primary" text="checkout" />
+              <buttonItem
+                link="#"
+                className="btn__primary"
+                text="checkout"
+                @click.prevent="checkoutCarts"
+              />
             </div>
           </form>
         </div>
@@ -125,6 +134,12 @@ export default {
       courses: [],
       checkoutCart: [],
       loading: true,
+      checkedOut: false,
+      checkout: {
+        name: "",
+        email: "",
+        carts: [],
+      },
       isCartComponent: true,
     };
   },
@@ -135,6 +150,7 @@ export default {
   },
   methods: {
     getCarts(loading = true) {
+      this.checkedOut = false;
       this.loading = loading;
 
       fetch("https://api-bookshop-com.onrender.com/v1/carts")
@@ -161,6 +177,40 @@ export default {
           console.error(`Error adding course to cart: ${err}`);
         })
         .finally(() => (this.loading = false));
+    },
+    checkoutCarts() {
+      const carts = this.checkoutCart.data.map((itm) => ({
+        course_id: itm.course_id,
+        quantity: itm.quantity,
+      }));
+
+      const requestBody = {
+        name: this.checkout.name,
+        email: this.checkout.email,
+        carts,
+      };
+
+      const options = {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      console.log(carts);
+
+      fetch("https://api-bookshop-com.onrender.com/v1/carts/checkout", options)
+        .then(async (resp) => {
+          const response = await resp.json();
+          if (response.success) this.checkedOut = response.success;
+          setTimeout(() => {
+            this.getCarts();
+          }, 5000);
+        })
+        .catch((err) => {
+          console.error(`Error adding course to cart: ${err}`);
+        });
     },
     async loadImages() {
       for (let i = 1; i <= 21; i++) {
