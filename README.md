@@ -56,9 +56,9 @@ bookshop.com/
 
 ## Running documentation locally
 
-1. copy this project from `/deliverables (Olumide Jim)` to a convienient directory on you pc
-1. ensure you directory does not have white space `" "` or brackets `[ ]` `( )`
-1. rename this project from `bookshop.com [VueJs]` to `bookshop.com` or a convenient name without a space or bracket
+1. Copy this project from `/deliverables (Olumide Jim)` to a convienient directory on your pc
+1. Ensure your directory does not have white space `" "` or brackets `[ ]` `( )`
+1. Rename this project from `bookshop.com [VueJs]` to `bookshop.com` or a convenient name without a space or bracket
 1. Run `npm install` to install the Node.js dependencies
 1. From the root `/bookshop.com` directory, run `npm run serve` to run the project locally on your personal machine
 1. From the root `/bootstrap` directory, run `npm run build` to build the project
